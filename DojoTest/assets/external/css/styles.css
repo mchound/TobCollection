@@ -1,0 +1,11 @@
+﻿body {
+}
+
+.contactWidget {
+    padding: 20px;
+}
+
+    .contactWidget ul li {
+        cursor: pointer;
+        background-color: lightblue;
+    }
