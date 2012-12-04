@@ -1,0 +1,6 @@
+﻿.zoomContainer {
+    width: 500px;
+    height: 400px;
+    border: 1px solid black;
+    zoom: 0.1;
+}

@@ -25,6 +25,50 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DojoTest", "http://localhos
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "tobstrap", "http://localhost:11687", "{775BBC90-5C3F-4305-ACCE-2E999FDA14B8}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "true"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_11687"
+		Debug.AspNetCompiler.PhysicalPath = "tobstrap\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_11687\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_11687"
+		Release.AspNetCompiler.PhysicalPath = "tobstrap\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_11687\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "tobstrap\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "handyZoom", "http://localhost:2264", "{A44249C2-F0E4-4104-AA51-D155E8B05E06}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "true"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_2264"
+		Debug.AspNetCompiler.PhysicalPath = "handyZoom\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_2264\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_2264"
+		Release.AspNetCompiler.PhysicalPath = "handyZoom\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_2264\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "handyZoom\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +83,14 @@ Global
 		{4BC01989-4607-4D11-9466-74F3108EDF8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BC01989-4607-4D11-9466-74F3108EDF8B}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{4BC01989-4607-4D11-9466-74F3108EDF8B}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{775BBC90-5C3F-4305-ACCE-2E999FDA14B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{775BBC90-5C3F-4305-ACCE-2E999FDA14B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{775BBC90-5C3F-4305-ACCE-2E999FDA14B8}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{775BBC90-5C3F-4305-ACCE-2E999FDA14B8}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{A44249C2-F0E4-4104-AA51-D155E8B05E06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A44249C2-F0E4-4104-AA51-D155E8B05E06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A44249C2-F0E4-4104-AA51-D155E8B05E06}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{A44249C2-F0E4-4104-AA51-D155E8B05E06}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
