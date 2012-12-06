@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\css\styles.css" />
+    <Content Include="assets\css\styles2.css" />
     <Content Include="assets\external\bootstrap\css\bootstrap-responsive.css" />
     <Content Include="assets\external\bootstrap\css\bootstrap-responsive.min.css" />
     <Content Include="assets\external\bootstrap\css\bootstrap.css" />
@@ -67,7 +68,8 @@
     <Content Include="assets\img\logo.png" />
     <Content Include="assets\js\Main.js" />
     <Content Include="home.html" />
-    <Content Include="Index.html" />
+    <Content Include="index.html" />
+    <Content Include="Index2.html" />
     <Content Include="packages.config" />
     <None Include="assets\external\jQuery\js\jquery-1.8.2.intellisense.js" />
     <Content Include="assets\external\jQuery\js\jquery-1.8.2.js" />

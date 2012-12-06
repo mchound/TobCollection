@@ -61,6 +61,7 @@ Contents.prototype.content = function () {
         _left: 0,
         _top: 0,
         _z: 0,
+        _name: '',
 
         zoomIn: function () {
             this.zoom += 0.01;
@@ -70,11 +71,11 @@ Contents.prototype.content = function () {
             this.zoom -= 0.01;
         },
 
-        _limit: function (value, min, max) {
-            if (value > 1)
-                this.fullyZoomedEvent();
+        _limit: function (value, min, max) {            
             return Math.min(Math.max(value, min), max);
         },
+
+        animationDuration: 20,
 
         _updateElement: function () {            
             $(this._jQueryObject).css('z-index', this._z).animate({
@@ -82,8 +83,8 @@ Contents.prototype.content = function () {
                 left: this._left,
                 top: this._top,
 
-            }, 20, function () {
-                // Animation complete.
+            }, this.animationDuration, function () {
+                this.animationDuration = 20;
             });
         },
 
@@ -100,19 +101,10 @@ Contents.prototype.content = function () {
         set z(value) { this._z = value; this._updateElement(); }, get z() { return this._z },
         // zoom
         set zoom(value) {
-            this._zoom = this._limit(value, 0.1, 1 - this._position * 0.1);
+            this._zoom = this._limit(value, 0.1, 1.01 - this._position * 0.1);
             this._updateElement();
         },
-        get zoom() { return this._zoom },
-
-        // Event handling
-        _fullyZoomedCallback: null,
-        addFullyZoomedListener: function (callback) {
-            this._fullyZoomedCallback = callback;
-        },
-        fullyZoomedEvent: function () {
-            //this._fullyZoomedCallback.apply(this, []);
-        }
+        get zoom() { return this._zoom }
     }
 };
 Contents.prototype.constructor = function (elements) {
@@ -131,6 +123,7 @@ Contents.prototype.constructor = function (elements) {
         content.zoom = initZoom;
         content.z = initZ;
         content.position = index;
+        content._name = $(element).attr('id');
         self.objects.push(content);
         initLeft -= 50;
         initTop -= 50;
@@ -144,38 +137,6 @@ function Contents(elements) {
     var self = this;
     this.constructor(elements);
 
-    // Fully zoomed event
-    //for (var i = 0; i < this.objects.length; i++) {
-    //    var _objects = this.objects;
-    //    this.objects[i].addFullyZoomedListener(function (content, ev) {
-    //        var lastObject = new self.content();
-    //        lastObject.position = _objects[_objects.length - 1].position;
-    //        lastObject.zoom = _objects[_objects.length - 1].zoom;
-    //        lastObject.top = _objects[_objects.length - 1].top;
-    //        lastObject.left = _objects[_objects.length - 1].left;
-    //        lastObject.z = _objects[_objects.length - 1].z;
-    //        for (var q = _objects.length - 1; q > 0; q--) {
-    //            _objects[q].position = _objects[q-1].position;
-    //            //_objects[q].zoom = _objects[q-1].zoom;
-    //            _objects[q].top = _objects[q - 1].top;
-    //            _objects[q].left = _objects[q - 1].left;
-    //            _objects[q].z = _objects[q - 1].z;
-    //        }
-    //        _objects[0].position = lastObject.position;
-    //        //_objects[0].zoom = lastObject.zoom;
-    //        _objects[0].top = lastObject.top;
-    //        _objects[0].left = lastObject.left;
-    //        _objects[0].z = lastObject.z;
-
-    //        var firstObject = _objects[0];
-    //        for (var i = 0; i < _objects.length-1; i++) {
-    //            _objects[i] = _objects[i + 1];
-    //        }
-    //        _objects[_objects.length - 1] = firstObject;
-
-    //    });
-    //}
-
     return {
         zoomOut: function () {
             for (var i = 0; i < self.objects.length; i++) {
@@ -183,10 +144,47 @@ function Contents(elements) {
             }
         },
 
-        zoomIn: function () {
+        zoomIn: function () {            
             for (var i = 0; i < self.objects.length; i++) {
                 self.objects[i].zoomIn();
+                if (self.objects[i].zoom > 1) {
+                    self.objects[i].zoom = 0.97;
+                    self.objects[i].animationDuration = 300;
+                    this._fullyZoomed();
+                    break;
+                }
+                else if(self.objects[i].zoom <= 0.3) {
+                    break;
+                }
             }
+        },
+
+        _fullyZoomed: function () {
+            var _objects = self.objects;
+            var lastObject = new self.content();
+            lastObject.position = _objects[_objects.length - 1].position;
+            lastObject.zoom = _objects[_objects.length - 1].zoom;
+            lastObject.top = _objects[_objects.length - 1].top;
+            lastObject.left = _objects[_objects.length - 1].left;
+            lastObject.z = _objects[_objects.length - 1].z;
+            for (var q = _objects.length - 1; q > 0; q--) {
+                _objects[q].position = _objects[q-1].position;
+                _objects[q].zoom = _objects[q-1].zoom;
+                _objects[q].top = _objects[q - 1].top;
+                _objects[q].left = _objects[q - 1].left;
+                _objects[q].z = _objects[q - 1].z;
+            }
+            _objects[0].position = lastObject.position;
+            _objects[0].zoom = lastObject.zoom;
+            _objects[0].top = lastObject.top;
+            _objects[0].left = lastObject.left;
+            _objects[0].z = lastObject.z;
+
+            var firstObject = _objects[0];
+            for (var i = 0; i < _objects.length-1; i++) {
+                _objects[i] = _objects[i + 1];
+            }
+            _objects[_objects.length - 1] = firstObject;
         }
     }
 
