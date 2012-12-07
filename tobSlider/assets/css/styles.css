@@ -1,0 +1,30 @@
+﻿body {
+    padding: 50px;
+}
+
+img {
+    max-width: 100%;
+}
+
+.tobSlider {
+    margin-left: auto;
+    margin-right: auto;
+    width: 550px;
+    overflow: hidden;
+    height: 350px;
+    position: relative;
+}
+
+    .tobSlider img {
+        position: absolute;
+        max-width: none;
+    }
+
+.tobSlider .slice{
+    display: block;
+    float: left;
+    background-color: green;
+    position: absolute;
+    top: 0px;
+    overflow: hidden;
+}
