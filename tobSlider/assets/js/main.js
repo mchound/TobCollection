@@ -2,6 +2,8 @@
 
 $(function () {
 
+    $('.tobSlider').tobSlider();
+
     APP.container = $('.tobSlider');
     APP.sliderWidth = APP.container.width();
     APP.sliderHeight = APP.container.height();
@@ -29,13 +31,6 @@ $(function () {
             }
         });
     }, 4000);
-
-    
-
-    $('.tobSlider').click(function () {
-        
-    });
-
 });
 
 
@@ -85,7 +80,10 @@ sliderObject = function (domElement, index) {
 
 function prepareForEffect(effect, image) {
     switch (effect) {
-        case 'slideUp':
+        case 'mySlideUp':
+            prepareSlideUpEffect(image);
+            break;
+        case 'myFadeOut':
             prepareSlideUpEffect(image);
             break;
         default:
@@ -118,38 +116,46 @@ function prepareSlideUpEffect(img) {
 }
 
 function doEffect(effect, callback) {
-    switch (effect) {
-        case 'slideUp':
-            slideUpEffect(callback);
-            break;
-        default:
-    }
-}
+    var slices = $('.tobSlider .slice');
 
-function slideUpEffect(callback) {
-    var slices = $('.tobSlider .slice');    
-    var timeout = function (element, delay, last) {
-        setTimeout(function () {
-            $(element).slideUp(600, function () {
-                $(element).remove();
-                if(last)
-                    callback.apply(this, null);
-            })
-        }, delay);
-    };
+    for (var i = 0; i < slices.length; i++) {
 
-    $(slices[0]).slideUp(600, function () {
-        $(slices[0]).remove();
-    });
-
-    for (var i = 1; i < slices.length; i++) {
-        if(i == slices.length - 1)
-            timeout(slices[i], 100 + i * 100, true);
+        if(i == 0){
+            timeout(slices[i], 1, null, effect);
+        }            
+        else if(i == slices.length-1)
+            timeout(slices[i], 100 + i * 100, callback, effect);
         else
-            timeout(slices[i], 100 + i * 100, false);
-    }    
+            timeout(slices[i], 100 + i * 100, null, effect);
+    }
 }
 
 function mySlideUp(element, speed, callback) {
     $(element).slideUp(speed, null, callback);
+}
+
+function myFadeOut(element, speed, callback) {
+    $(element).fadeOut(speed, null, callback);
+}
+
+function timeout(element, delay, callback, effect) {
+    setTimeout(function () {
+
+        window[effect](element, 600, function () {
+            $(element).remove();
+            if (callback)
+                callback.apply(this, null);
+        });
+    }, delay);
+}
+
+(function ($) {
+    $.fn.tobSlider = function (options) {
+        var self = $(this);
+
+    };
+})(jQuery);
+
+var TobSlider = function (wrapper, options) {
+    
 }
