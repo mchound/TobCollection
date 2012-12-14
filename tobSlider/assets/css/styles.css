@@ -6,12 +6,15 @@ img {
     max-width: 100%;
 }
 
+.test {
+    width: 50%;
+    height: 350px;
+}
+
 .tobSlider {
     margin-left: auto;
-    margin-right: auto;
-    width: 550px;
-    overflow: hidden;
-    height: 350px;
+    margin-right: auto;    
+    overflow: hidden;    
     position: relative;
 }
 
