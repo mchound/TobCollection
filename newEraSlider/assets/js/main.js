@@ -1,7 +1,7 @@
 ﻿var APP = {};
 
 $(function () {
-    $('.test').tobSlider();
+    $('.newEraSlider').tobSlider();
 });
 
 (function ($) {

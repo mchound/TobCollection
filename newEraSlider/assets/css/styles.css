@@ -1,0 +1,69 @@
+﻿body {
+    padding: 50px;
+}
+
+img {
+    max-width: 100%;
+}
+
+.test {
+    width: 550px;
+    height: 350px;
+}
+
+.tobSlider {
+    margin-left: auto;
+    margin-right: auto;    
+    overflow: hidden;    
+    position: relative;
+}
+
+    .tobSlider img {
+        position: absolute;
+        max-width: none;
+    }
+
+.tobSlider .slice{
+    display: block;
+    float: left;
+    background-color: green;
+    position: absolute;
+    top: 0px;
+    overflow: hidden;
+}
+
+.newEraSlider {
+    width: 100%;
+    height: 540px;
+    overflow: hidden;
+}
+
+    .newEraSlider .slider {
+        position: relative;
+    }
+
+        .newEraSlider .slider ul {
+            width: 100%;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+            .newEraSlider .slider ul li{
+                list-style: none;
+                position: absolute;
+            }
+
+                .newEraSlider .slider ul li img {
+                    max-width: 100%;
+                }
+
+.newEraSlider .slider ul li .caption {
+    font: bold 25px Segoe UI;
+    color: black;
+    background-color: white;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    opacity: 0; /*TODO:: Lägg till för IE8*/
+}
