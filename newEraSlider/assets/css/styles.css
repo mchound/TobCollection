@@ -36,10 +36,21 @@ img {
     width: 100%;
     height: 500px;
     overflow: hidden;
+    position: relative;
 }
-
+    .newEraSlider .progressBar {
+        height: 5px;
+        background-color: white;
+        opacity: 0.5;
+        width: 0px;
+        position: absolute;
+        bottom: 0px;
+        z-index: 999;
+        border-bottom: 5px solid black;
+    }
     .newEraSlider .slider {
         position: relative;
+        height: 100%;
     }
 
         .newEraSlider .slider ul {
@@ -61,10 +72,14 @@ img {
 .newEraSlider .slider ul li .caption {
     font: bold 25px Segoe UI;
     color: black;
-    background-color: white;
+    background-color: transparent;
     position: absolute;
     top: 0px;
     left: 0px;
     opacity: 1; /*TODO:: Lägg till för IE8*/
     -webkit-transition-property: all;
 }
+
+    .newEraSlider .slider ul li .caption h1 {
+        color: white;
+    }

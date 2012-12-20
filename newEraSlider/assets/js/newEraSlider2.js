@@ -83,23 +83,11 @@ function ListItem(jQueryListItem, variables, _slideCount, index) {
 
     var stopWatch = new StopWatch(duration, 50);
 
-    //var timer = {
-    //    duration: parseFloat(element.attr('data-duration')) * 1000,
-    //    elapsedTimed: 0,
-    //    timeLeft: 0,
-    //    timerId: -1,
-    //    intervalId: -1,
-    //    timeOutFunc: null
-    //};
-
     // Private function for setting z-index
     var setZ = function () {
         element.css('z-index', z).css('display', 'block');
     }
 
-    // ===============================
-    // Constructor
-    // ===============================
     // Initialize element
     setZ();
 
@@ -155,10 +143,13 @@ function StopWatch(_duration, accuracy) {
     var runTimer = function () {
         intervalId = setInterval(function () {
             timeElapsed += accuracy;
-            $('title').html(timeElapsed);
+            progressBar.css('width', (progress += progressStep) + '%');
         }, accuracy);
     };
-
+    var progressBar = $('.progressBar');
+    var progressStep = 100/ (duration / accuracy);
+    var progress = 0;
+    
     this.Status = 'stopped';
 
     this.Start = function (func) {
@@ -166,7 +157,9 @@ function StopWatch(_duration, accuracy) {
         readyFunction = func;
         timeElapsed = 0;
         runTimer();
-        timerId = setTimeout(readyFunction, duration);        
+        timerId = setTimeout(readyFunction, duration);
+        progress = 0;
+        progressBar.css('width', progress);
     }
 
     this.Pause = function () {
