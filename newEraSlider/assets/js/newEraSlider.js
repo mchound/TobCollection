@@ -22,12 +22,13 @@
 var NewEraSlider = function (wrapper, options) {
 
     // Merge argument settings with default
-    var settings = $.extend({}, $.fn.newEraSlider.newEraSlider, options);
+    var settings = $.extend({}, $.fn.newEraSlider.defaultSettings, options);
 
     var variables = {
         sliderWidth: 0,
         sliderHeight: 0,
-        slideCount: 0
+        slideCount: 0,
+        currentSlide: 0
     };
 
     // Get slider and set class tobSlider if it is not already have it
@@ -45,20 +46,45 @@ var NewEraSlider = function (wrapper, options) {
         listItems.push(listItem);
         variables.slideCount++;
     });
+    delete _listItems;
 
-    sliderInner.click(function () {
-        listItems[3].Run();
-    });
+    // Run the slider
+    var f = function () {
+        clearInterval(timer);
+        listItems[variables.currentSlide].Remove(function () {            
+            $.each(listItems, function (index, item) { item.MoveForward(); });            
+            if (++variables.currentSlide == variables.slideCount)
+                variables.currentSlide = 0;
+            listItems[variables.currentSlide].Run();            
+        });
+        timer = setInterval(f, listItems[variables.currentSlide].Duration);
+    }
+    var timer;
+    setTimeout(function () {
+        timer = setInterval(f, listItems[variables.currentSlide].Duration);
+        listItems[variables.currentSlide].Run();        
+    }, 1000);
+
+    //var timer = setInterval(f, listItems[variables.currentSlide].Duration);
     
+    // Slider container resize event
+    $(window).resize(function () {
+        variables.sliderWidth = $(wrapper).width();
+        variables.sliderHeight = $(wrapper).height();
+        $.each(listItems, function (index, item) {
+            item.SliderResized(variables.sliderWidth, variables.sliderHeight);
+        });
+    });
+
 }
 
 var ListItem = function (jQueryListItem, variables, slideCount, index) {
     this._captions = [];
     this._jQueryElement = $(jQueryListItem);
     this._duration = parseFloat(this._jQueryElement.attr('data-duration')) * 1000; // Milliseconds
-    this._z = index;
+    this._z = slideCount - index-1;
     this._slideCount = slideCount;
-    this._jQueryElement.css('z-index', index);
+    this._jQueryElement.css('z-index', this._z);
     var captions = this._jQueryElement.children('.caption');
     var self = this;
     $.each(captions, function (index, caption) {
@@ -71,17 +97,27 @@ var ListItem = function (jQueryListItem, variables, slideCount, index) {
             $.each(self._captions, function (index, caption) {
                 caption.DoTransition();
             });
-            setTimeout(this.Remove, self._duration);
+            
+            //setTimeout(this.Remove, self._duration, callback);
         },
 
-        Remove: function(){
-            self._jQueryElement.fadeOut(400, function () { 
-                var z = self._z + 1;
-                if (z == self._slideCount)
-                    self._z = 0;
-                self._jQueryElement.css('z-index', self._z);
+        Remove: function (callback) {
+            self._jQueryElement.fadeOut(400, callback);
+        },
+
+        MoveForward: function () {
+            if (++self._z == self._slideCount)
+                self._z = 0;
+            self._jQueryElement.css('z-index', self._z).css('display', 'block');
+        },
+
+        SliderResized: function(sliderWidth, sliderHeight){
+            $.each(self._captions, function (index, caption) {
+                caption.SliderResized(sliderWidth, sliderHeight);
             });
-        }
+        },
+
+        get Duration() {return self._duration}
     }
 }
 
@@ -90,39 +126,52 @@ var Caption = function (jQueryCaptionElement, variables) {
     var width = this._jQueryElement.width();
     var height = this._jQueryElement.height();
     this._sliderWidth = variables.sliderWidth;
-    this._sliderHeight = variables.sliderHeight;
+    this._sliderHeight = variables.sliderHeight;    
+    this._x = this._jQueryElement.attr('data-x');
+    this._y = this._jQueryElement.attr('data-y');
+    this._xPerc = this._x / variables.sliderWidth;
+    this._yPerc = this._y / variables.sliderHeight;
 
     this._direction = new Direction(
         this._jQueryElement.attr('data-direction'),
-        this._jQueryElement.attr('data-x'),
-        this._jQueryElement.attr('data-y'),
+        this._xPerc,
+        this._yPerc,
         width,
         height,
         variables.sliderWidth,
         variables.sliderHeight);
 
     this._start = parseFloat(this._jQueryElement.attr('data-start'));
-    this._duration = parseFloat(this._jQueryElement.attr('data-duration'));    
-    this._xPerc = this._x / variables.sliderWidth;
-    this._yPerc = this._y / variables.sliderHeight;
-    
+    this._duration = parseFloat(this._jQueryElement.attr('data-duration'));
     this._jQueryElement.css('width', width).css('left', this._direction.StartX).css('top', this._direction.StartY).css('-webkit-transition-delay', this._start + 's').css('-webkit-transition-duration', '0.3s');
     
     var self = this;
     return {
         DoTransition: function () {
             self._jQueryElement.css('-webkit-transition-property', 'all').css('-webkit-transition-delay', self._start + 's').css('-webkit-transition-duration', '0.3s');
-            self._jQueryElement.css('opacity', '1').css('left', self._direction.X).css('top', self._direction.Y);
+            self._jQueryElement.css('left', self._direction.X).css('top', self._direction.Y); //.css('opacity', '1')
             setTimeout(this.RevertTransition, this.TotalDuration * 1000 + 300);
             setTimeout(this.ResetTransition, this.TotalDuration * 1000 + 300 + 300);
         },
 
         RevertTransition: function(){
-            self._jQueryElement.css('left', self._direction.EndX).css('top', self._direction.EndY).css('opacity', '0').css('-webkit-transition-delay', '0s');
+            self._jQueryElement.css('left', self._direction.EndX).css('top', self._direction.EndY).css('-webkit-transition-delay', '0s'); //.css('opacity', '0')
         },
 
         ResetTransition: function(){            
             self._jQueryElement.css('left', self._direction.StartX).css('top', self._direction.StartY).css('-webkit-transition-property', 'none');
+        },
+
+        SliderResized: function(sliderWidth, sliderHeight){
+            delete self._direction;
+            self._direction = new Direction(
+                self._jQueryElement.attr('data-direction'),
+        self._xPerc,
+        self._yPerc,
+        width,
+        height,
+        sliderWidth,
+        sliderHeight);
         },
 
         get TotalDuration() {
@@ -131,113 +180,112 @@ var Caption = function (jQueryCaptionElement, variables) {
     }
 }
 
-var Direction = function (directionDefinition, x, y, width, height, containerWidth, containerHeight) {
+var Direction = function (directionDefinition, procX, procY, width, height, containerWidth, containerHeight) {
     this._startX = 0;
     this._startY = 0;
-    this._posX = x;
-    this._posY = y;
     this._endX = 0;
     this._endY = 0;
-
+    this._x = parseFloat(containerWidth * procX);
+    this._y = parseFloat(containerHeight * procY);
     switch (directionDefinition) {
         //Left
         case 'ltr':
             this._startX = -1 * width;
-            this._startY = y;
+            this._startY = this._y;
             this._endX = containerWidth;
             this._endY = this._startY;
             break;
         case 'ltl':
             this._startX = -1 * width;
-            this._startY = y;
+            this._startY = this._y;
             this._endX = -1 * width;
             this._endY = this._startY;
             break;
         case 'ltt':
             this._startX = -1 * width;
-            this._startY = y;
-            this._endX = x;
+            this._startY = this._y;
+            this._endX = this._x;
             this._endY = -1 * height;
             break;
         case 'ltb':
             this._startX = -1 * width;
-            this._startY = y;
-            this._endX = x;
+            this._startY = this._y;
+            this._endX = this._x;
             this._endY = height;
             break;
             //Right
         case 'rtr':
             this._startX = containerWidth;
-            this._startY = y;
+            this._startY = this._y;
             this._endX = containerWidth;
             this._endY = this._startY;
             break;
         case 'rtl':
             this._startX = containerWidth;
-            this._startY = y;
+            this._startY = this._y;
             this._endX = -1 * width;
             this._endY = this._startY;
             break;
         case 'rtt':
             this._startX = containerWidth;
-            this._startY = y;
-            this._endX = x;
+            this._startY = this._y;
+            this._endX = this._x;
             this._endY = -1 * height;
             break;
         case 'rtb':
             this._startX = containerWidth;
-            this._startY = y;
-            this._endX = x;
+            this._startY = this._y;
+            this._endX = this._x;
             this._endY = containerHeight;
             break;
             // Top
         case 'ttr':
-            this._startX = x;
+            this._startX = this._x;
             this._startY = -1 * height;
             this._endX = containerWidth;
-            this._endY = y;
+            this._endY = this._y;
             break;
         case 'ttl':
-            this._startX = x;
+            this._startX = this._x;
             this._startY = -1 * height;
             this._endX = -1 * width;
-            this._endY = y;
+            this._endY = this._y;
             break;
         case 'ttt':
-            this._startX = x;
+            this._startX = this._x;
             this._startY = -1 * height;
-            this._endX = x;
+            this._endX = this._x;
             this._endY = -1 * height;
             break;
         case 'ttb':
-            this._startX = x;
+            this._startX = this._x;
             this._startY = -1 * height;
-            this._endX = x;
+            this._endX = this._x;
             this._endY = containerHeight;
             break;
             // Bottom
         case 'btr':
-            this._startX = x;
+            this._startX = this._x;
             this._startY = containerHeight;
             this._endX = containerWidth;
-            this._endY = y;
+            this._endY = this._y;
             break;
         case 'btl':
-            this._startX = x;
+            this._startX = this._x;
             this._startY = containerHeight;
             this._endX = -1 * width;
-            this._endY = y;
+            this._endY = this._y;
             break;
         case 'btt':
-            this._startX = x;
+            this._startX = this._x;
             this._startY = containerHeight;
-            this._endX = x;
+            this._endX = this._x;
             this._endY = -1 * height;
             break;
         case 'btb':
-            this._startX = x;
+            this._startX = this._x;
             this._startY = containerHeight;
-            this._endX = x;
+            this._endX = this._x;
             this._endY = containerHeight;
             break;
         default:
@@ -246,8 +294,8 @@ var Direction = function (directionDefinition, x, y, width, height, containerWid
     var self = this;
 
     return {
-        get X() { return parseInt(self._posX) },
-        get Y() {return parseInt(self._posY)},
+        get X() { return parseInt(self._x) },
+        get Y() {return parseInt(self._y)},
         get StartX() {return parseInt(self._startX)},
         get StartY() {return parseInt(self._startY)},
         get EndX() {return parseInt(self._endX)},
